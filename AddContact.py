@@ -20,34 +20,31 @@ class Lead:
 # Add contact to contact list
 def add_contact(registrant):
     new_registrant = registrant["registrant"]
+    new_name = new_registrant["name"]
+    new_phone = new_registrant["phone"]
+    new_email = new_registrant["email"]
 
     is_contact_new = True
 
     for contact in ContactsList:  # Compare and update contact phone and email to registrant.
-        if new_registrant["email"] == contact.email:
-            is_contact_new = False
+        if new_email == contact.email or new_phone == contact.phone:
             update_contact(contact, new_registrant)
-        elif new_registrant["phone"] == contact.phone:
             is_contact_new = False
-            update_contact(contact, new_registrant)
         else:
-            for lead in LeadsList[:]:  # If registrant isnt a current contact, compare to leads and update contacts.
-                if new_registrant["email"] == lead.email:
-                    is_contact_new = False
-                    ContactsList.append(Contact(new_registrant["name"], new_registrant["email"], new_registrant["phone"]))
+            for lead in LeadsList[:]:  # If registrant isn't a current contact, compare to leads and update contacts.
+                if new_email == lead.email or new_phone == lead.phone:
+                    ContactsList.append(Contact(new_name or lead.name, new_email or lead.email, new_phone or lead.phone))
                     LeadsList.remove(lead)
-                elif new_registrant["phone"] == lead.phone:
                     is_contact_new = False
-                    ContactsList.append(Contact(new_registrant["name"], new_registrant["email"], new_registrant["phone"]))
-                    LeadsList.remove(lead)
+                    break
     if is_contact_new:  # If registrant is not a current contact or lead, create a new contact with registrant data.
-        new_contact = Contact(new_registrant["name"], new_registrant["email"], new_registrant["phone"])
+        new_contact = Contact(new_name, new_email, new_phone)
         ContactsList.append(new_contact)
 
 
 # Function to update contacts when registrant has updated data and current value is None.
 def update_contact(contact, registrant):
-    for attr, value in contact1.__dict__.items():
+    for attr, value in contact.__dict__.items():
         if value is None:
             contact.__setattr__(attr, registrant[attr])
 
@@ -75,7 +72,7 @@ LeadsList.extend([lead1, lead2, lead3, lead4, lead5])
 luci = '''{
     "registrant":
         {
-            "name": "Luci Liu",
+            "name": "Lucy Liu",
             "email": "lucy@liu.com",
             "phone": "3210001112"
         }
